@@ -8,35 +8,37 @@ const refs = {
 
 refs.formEl.addEventListener('submit', onFormSubmit);
 let summaryDelay;
+let position; 
+
 
 function onFormSubmit(event) {
   event.preventDefault();
-  const amount = Number(refs.amountEl.value);
-  for (let i = 0; i <= amount; i += 1) {
 
-    createPromise()
-      .then(({ position, delay }) => {
+  const amount = Number(refs.amountEl.value);
+  const delay = Number(refs.delayEl.value);
+  const step = Number(refs.stepEl.value);
+  summaryDelay = delay + step;
+  
+  for (let i = 0; i <= amount; i += 1) {
+       createPromise(position, summaryDelay)
+      .then(({ position, summaryDelay }) => {
     console.log(`✅ Fulfilled promise ${position} in ${summaryDelay}ms`);
   })
-      .catch(({ position, delay }) => {
+      .catch(({ position, summaryDelay }) => {
     console.log(`❌ Rejected promise ${position} in ${summaryDelay}ms`);
   });
-  }
+   }
 }
 
-function createPromise(position, delay) {
-  
-  return new Promise((resolve, reject) => {
-    const delay = Number(refs.delayEl.value);
-    const step = Number(refs.stepEl.value);
-    summaryDelay = delay + step;
+function createPromise() {
+    return new Promise((resolve, reject) => {
 
     setTimeout(() => {
       const shouldResolve = Math.random() > 0.3;
         if (shouldResolve) {
-          resolve({ position, delay });
+          resolve({ position, summaryDelay });
   } else {
-          reject({ position, delay });
+          reject({ position, summaryDelay });
   }
     }, summaryDelay)
   });

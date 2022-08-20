@@ -16,7 +16,10 @@ const refs = {
 
 refs.buttonEl.addEventListener('click', () => {
   timer.start();
+
 });
+
+let deltaTime;
 
 // default settings for the button - disabled
 refs.buttonEl.disabled = true;
@@ -34,7 +37,7 @@ const options = {
       // selectedTime is the time that was selected by the user and getTime() method returns a numeric representation of the date (timestamp) – the number of milliseconds
       let selectedTime = selectedDates[0].getTime();
       // difference between the selected time and current time in milliseconds
-      let deltaTime = selectedTime - startTime;
+      deltaTime = selectedTime - startTime;
 
       // if selectedTime < OR === to startTime then show alert window
       if (selectedTime <= startTime) {
@@ -43,35 +46,36 @@ const options = {
         // if selectedTime > than startTime make a Start button enabled
         refs.buttonEl.disabled = false;
       }
-
-      // timer object
-      timer = {
-        IntervalId: null,
-
-        start() {
-          refs.buttonEl.disabled = true;
-          // if there are more than one IntervalId clear it and leave it the last one
-          if (this.IntervalId) {
-            clearInterval(this.IntervalId);
-          }
-          // setting Interval for IntervalId
-          this.IntervalId = setInterval(() => {
-            // converting deltaTime from milliseconds into seconds
-            deltaTime -= 1000;
-            // if deltaTime becomes less than 1 clear the Interval and return NULL
-            if (deltaTime <= 1) {
-              clearInterval(this.IntervalId);
-              return null;
-            }
-            // passing deltaTime to the function that returns an object with the calculated time remaining until the end date
-            const time = convertMs(deltaTime);
-            // calling the function that updates values of the clock and passing converted time remaining until the end date
-            updateClock(time);
-            // changing the Start button status to disabled after the time was selected
-          }, 1000);
-        },
-      };
     }
+  },
+};
+
+// timer object
+timer = {
+  IntervalId: null,
+
+  start() {
+    refs.buttonEl.disabled = true;
+    refs.calendarInput.disabled = true;
+    // if there are more than one IntervalId clear it and leave it the last one
+    if (this.IntervalId) {
+      clearInterval(this.IntervalId);
+    }
+    // setting Interval for IntervalId
+    this.IntervalId = setInterval(() => {
+      // converting deltaTime from milliseconds into seconds
+      deltaTime -= 1000;
+      // if deltaTime becomes less than 1 clear the Interval and return NULL
+      if (deltaTime <= 1) {
+        clearInterval(this.IntervalId);
+        return null;
+      }
+      // passing deltaTime to the function that returns an object with the calculated time remaining until the end date
+      const time = convertMs(deltaTime);
+      // calling the function that updates values of the clock and passing converted time remaining until the end date
+      updateClock(time);
+      // changing the Start button status to disabled after the time was selected
+    }, 1000);
   },
 };
 
